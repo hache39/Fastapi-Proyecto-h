@@ -1,4 +1,6 @@
 venv/
 .DS_Store
+test.db
+
 __pychache__/
 *.pyc
