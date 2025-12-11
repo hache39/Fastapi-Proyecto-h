@@ -77,3 +77,93 @@ Guarda usuarios de forma persistente
 Utiliza SQLAlchemy como ORM
 
 Tiene un CRUD profesional listo para escalar
+
+Integración de CRUD + Rutas + SQLite con SQLAlchemy
+
+En esta clase completamos la estructura profesional de nuestra API conectada a SQLite usando SQLAlchemy. Organizamos el proyecto en capas claras y dejamos todo listo para escalar.
+
+1. Creación completa del CRUD (crud/user_crud.py)
+
+Implementamos las 5 operaciones básicas:
+
+create_user() → crear usuario
+
+get_users() → obtener todos
+
+get_user() → obtener por ID
+
+update_user() → actualizar
+
+delete_user() → eliminar
+
+Aquí movimos toda la lógica que antes estaba dentro del router, logrando una separación limpia entre las rutas y la base de datos.
+
+2.  Actualización del router (routers/usuarios.py)
+
+El router ahora SOLO:
+
+Recibe la petición
+
+Llama a las funciones CRUD
+
+Devuelve el resultado
+
+Ya no contiene lógica de base de datos.
+
+Esto mejora:
+
+Mantenibilidad
+
+Escalabilidad
+
+Orden del proyecto
+
+3. Modelos organizados en 2 capas
+
+Pydantic (models/user.py) → entrada y salida de datos
+
+SQLAlchemy (models/user_sql.py) → estructura física en la base de datos
+
+Esto permite separar validación (Pydantic) de persistencia (SQLAlchemy).
+
+4.  Integración de SQLite con SQLAlchemy
+
+Creamos:
+
+database/db.py → conexión a SQLite
+
+test.db → archivo generado automáticamente
+
+get_db() → dependencia para abrir/cerrar sesiones
+
+Todo funciona sin servidores externos, ideal para desarrollo.
+
+5.  Pruebas en Swagger
+
+Probamos los 5 endpoints:
+
+POST /usuarios/
+
+GET /usuarios/
+
+GET /usuarios/{id}
+
+PUT /usuarios/{id}
+
+DELETE /usuarios/{id}
+
+Todos funcionando correctamente.
+
+Arquitectura final lograda en esta clase
+project/
+├─ database/
+│ └─ db.py
+├─ models/
+│ ├─ user.py (Pydantic)
+│ └─ user_sql.py (SQLAlchemy)
+├─ crud/
+│ └─ user_crud.py
+├─ routers/
+│ └─ usuarios.py
+├─ main.py
+└─ test.db
