@@ -4,7 +4,7 @@ from typing import List, Optional
 from sqlalchemy.orm import Session
 
 from models.user_sql import UserSQL
-from models.user import User
+from models.user import UserCreate
 
 def get_user(db: Session, user_id: int) -> Optional[UserSQL]:
     """Devuelve un usuario por id o None si no existe."""
@@ -14,7 +14,7 @@ def get_users(db: Session, skip: int = 0, limit: int = 100) -> List[UserSQL]:
     """Devuelve una lista de usuarios (posibilidad de paginar con skip/limit)."""
     return db.query(UserSQL).offset(skip).limit(limit).all()
 
-def create_user(db: Session, user_in: User) -> UserSQL:
+def create_user(db: Session, user_in: UserCreate) -> UserSQL:
     """Crea un usuario nuevo en la base de datos y devuelve el objeto SQLAlchemy."""
     db_user = UserSQL(nombre=user_in.nombre, edad=user_in.edad)
     db.add(db_user)
@@ -22,7 +22,7 @@ def create_user(db: Session, user_in: User) -> UserSQL:
     db.refresh(db_user)
     return db_user
 
-def update_user(db: Session, user_id: int, user_in: User) -> Optional[UserSQL]:
+def update_user(db: Session, user_id: int, user_in: UserCreate) -> Optional[UserSQL]:
     """Actualiza un usuario existente; devuelve el usuario actualizado o None."""
     usuario = db.query(UserSQL).filter(UserSQL.id == user_id).first()
     if not usuario:

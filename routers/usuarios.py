@@ -5,7 +5,7 @@ from typing import List
 from sqlalchemy.orm import Session
 
 from database.db import get_db
-from models.user import User
+from models.user import UserCreate, UserResponse
 from crud.user_crud import (
     get_user,
     get_users,
@@ -20,32 +20,30 @@ router = APIRouter(
 )
 
 # CREATE
-@router.post("/", response_model=User)
-def crear_usuario(usuario: User, db: Session = Depends(get_db)):
-    db_user = create_user(db, usuario)
-    return User(nombre=db_user.nombre, edad=db_user.edad, id=db_user.id)
+@router.post("/", response_model=UserResponse, status_code=201)
+def crear_usuario(usuario: UserCreate, db: Session = Depends(get_db)):
+    return create_user(db, usuario)
 
 # READ ALL
-@router.get("/", response_model=List[User])
+@router.get("/", response_model=List[UserResponse])
 def obtener_usuarios(db: Session = Depends(get_db)):
-    usuarios_db = get_users(db)
-    return [User(nombre=u.nombre, edad=u.edad, id=u.id) for u in usuarios_db]
+    return get_users(db)
 
 # READ BY ID
-@router.get("/{id}", response_model=User)
+@router.get("/{id}", response_model=UserResponse)
 def obtener_usuario(id: int, db: Session = Depends(get_db)):
     usuario = get_user(db, id)
     if not usuario:
         raise HTTPException(status_code=404, detail="Usuario no encontrado")
-    return User(nombre=usuario.nombre, edad=usuario.edad, id=usuario.id)
+    return usuario
 
 # UPDATE
-@router.put("/{id}", response_model=User)
-def actualizar_usuario(id: int, usuario_actualizado: User, db: Session = Depends(get_db)):
+@router.put("/{id}", response_model=UserResponse)
+def actualizar_usuario(id: int, usuario_actualizado: UserCreate, db: Session = Depends(get_db)):
     usuario = update_user(db, id, usuario_actualizado)
     if not usuario:
         raise HTTPException(status_code=404, detail="Usuario no encontrado")
-    return User(nombre=usuario.nombre, edad=usuario.edad, id=usuario.id)
+    return usuario
 
 # DELETE
 @router.delete("/{id}")

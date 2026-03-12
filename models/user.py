@@ -1,9 +1,17 @@
-from pydantic import BaseModel
-from typing import Optional
+from pydantic import BaseModel, ConfigDict
 
 
-class User(BaseModel):
-    '''representa un usuario simple en el sitema'''
+# Schema para CREAR un usuario (entrada — sin id)
+class UserCreate(BaseModel):
     nombre: str
     edad: int
-    id: Optional[int] = None  #ID asignado automaticamente 
+
+
+# Schema para RESPONDER con un usuario (salida — incluye id)
+class UserResponse(BaseModel):
+    id: int
+    nombre: str
+    edad: int
+
+    # Permite que Pydantic lea directamente desde objetos SQLAlchemy
+    model_config = ConfigDict(from_attributes=True)
