@@ -1,7 +1,8 @@
 from fastapi import FastAPI
-from routers import saludo, usuarios
+from routers import saludo, usuarios, productos
 from database.db import Base, engine
 from models.user_sql import UserSQL
+from models.producto_sql import ProductoSQL
 
 #crea la aplicacion principal
 app = FastAPI()
@@ -17,8 +18,9 @@ def home():
 
 
 # incluir rutas externas
-app.include_router(saludo.router) 
+app.include_router(saludo.router)
 app.include_router(usuarios.router)
+app.include_router(productos.router)
 
 #crear las tablas en la base de datos
 Base.metadata.create_all(bind=engine)
